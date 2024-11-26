@@ -11,6 +11,8 @@
 # # or access fields directly from the response object
 # print(response.message.content)
 
+#TODO: Test on lower-level CPU/GPU laptop
+
 from ollama import chat
 
 
