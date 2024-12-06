@@ -1,20 +1,12 @@
-# from ollama import chat
-# from ollama import ChatResponse
-
-# response: ChatResponse = chat(model='llama3.2', messages=[
-#   {
-#     'role': 'user',
-#     'content': 'Who are you',
-#   },
-# ])
-# print(response['message']['content'])
-# # or access fields directly from the response object
-# print(response.message.content)
-
-#TODO: Test on lower-level CPU/GPU laptop
-
 from ollama import chat
+from vosk_audio import Vosk
 
+# audio format: PCM 16khz 16bit mono
+vosk = Vosk(audio_path='')
+results = vosk.parse()
+user_input = ''
+for result in results:
+    user_input += f' {result} '
 
 messages = [
     {
@@ -35,21 +27,29 @@ messages = [
     }
 ]
 
-while True:
-    user_input = input('Chat with history: ')
-    response = chat(
+response = chat(
         'llama3.2',
-    messages=messages+ [
-            {'role': 'user', 'content': user_input},
+        messages=messages+ [
+                {'role': 'user', 'content': user_input},
         ]
     )
+print(response.message.content)
 
-    # Add the response to the messages to maintain the history
-    messages += [
-        {'role': 'user', 'content': user_input},
-        {'role': 'assistant', 'content': response.message.content},
-    ]
-    print(response.message.content + '\n')
+# while True:
+#     user_input = input('Chat with history: ')
+#     response = chat(
+#         'llama3.2',
+#         messages=messages+ [
+#                 {'role': 'user', 'content': user_input},
+#         ]
+#     )
+
+#     # Add the response to the messages to maintain the history
+#     messages += [
+#         {'role': 'user', 'content': user_input},
+#         {'role': 'assistant', 'content': response.message.content},
+#     ]
+#     print(response.message.content + '\n')
 
 '''
 Input: go forward 100 centimeters
@@ -57,31 +57,3 @@ Input: go backward 100 centimeters
 Input: turn left 50 degrees
 Input: turn right 50 degrees
 '''
-
-# from ollama import ps, pull, chat
-# from ollama import ProcessResponse
-
-# # Ensure at least one model is loaded
-# response = pull('llama3.2', stream=True)
-# progress_states = set()
-# for progress in response:
-#   if progress.get('status') in progress_states:
-#     continue
-#   progress_states.add(progress.get('status'))
-#   print(progress.get('status'))
-
-# print('\n')
-
-# print('Waiting for model to load... \n')
-# chat(model='llama3.2', messages=[{'role': 'user', 'content': 'Why is the sky blue?'}])
-
-
-# response: ProcessResponse = ps()
-# for model in response.models:
-#   print('Model: ', model.model)
-#   print('  Digest: ', model.digest)
-#   print('  Expires at: ', model.expires_at)
-#   print('  Size: ', model.size)
-#   print('  Size vram: ', model.size_vram)
-#   print('  Details: ', model.details)
-#   print('\n')
